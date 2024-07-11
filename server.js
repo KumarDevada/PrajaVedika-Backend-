@@ -23,6 +23,7 @@ mongoose.connect(url, {
 
 const User = require('./models/User');
 const MPTC = require('./models/MPTC');
+const Anno = require('./models/Anno');
 
 // var ObjectId = require('mongodb').ObjectId;
 
@@ -247,6 +248,34 @@ app.post('/register', async (req, res) => {
     } catch (err) {
       console.error(err.message);
       res.status(500).json({ msg: 'Server error', error: err.message });
+    }
+  });
+
+
+
+  app.get('/annos', async (req, res) => {
+    try {
+      const annos = await Anno.find();
+      res.status(200).json(annos);
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  });
+
+  app.post('/annos', async (req, res) => {
+    const { heading, date, description } = req.body;
+    
+    const newAnno = new Anno({
+      heading,
+      date,
+      description,
+    });
+  
+    try {
+      const savedAnno = await newAnno.save();
+      res.status(201).json(savedAnno);
+    } catch (err) {
+      res.status(400).json({ message: err.message });
     }
   });
 
